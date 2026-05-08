@@ -70,7 +70,6 @@ function ajouterHistorique(user, ia) {
 /* ==========================================
    API CHAT YELOX
 ========================================== */
-
 async function envoyerRequeteComplete() {
 
     const input = document.getElementById('userInput');
@@ -81,6 +80,7 @@ async function envoyerRequeteComplete() {
     if (!input || !output || !loader) return;
 
     const message = input.value;
+
     if (!message.trim()) return;
 
     resultContainer?.classList.remove('hidden');
@@ -90,7 +90,9 @@ async function envoyerRequeteComplete() {
 
         const res = await fetch(`${API_URL}/api/chat`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
                 message,
                 mode: window.currentMode || "rapide"
@@ -101,18 +103,28 @@ async function envoyerRequeteComplete() {
 
         output.innerText = data.reply;
 
-        // 🔊 lecture auto YELOX
+        // 🔊 son YELOX
+        jouerSonYelox();
+
+        // 🎙️ lecture automatique
         lireReponseAuto(data.reply);
 
         // 💾 historique
         ajouterHistorique(message, data.reply);
 
     } catch (err) {
+
+        console.error(err);
+
         output.innerText = "Erreur YELOX CORE";
+
     } finally {
+
         loader.classList.add('hidden');
+
     }
 }
+
 /* ==========================================
    VOIX IA YELOX CORE (FR + EN + 5 VOIX)
 ========================================== */
@@ -231,7 +243,10 @@ function lireReponse(type = "auto") {
 ========================================== */
 
 function jouerSonYelox() {
+
     const audio = new Audio("https://www.myinstants.com/media/sounds/success.mp3");
+
     audio.volume = 0.3;
+
     audio.play();
 }
