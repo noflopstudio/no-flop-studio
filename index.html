@@ -8,6 +8,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
+    <!-- Centralisation de la logique -->
+    <script src="script.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link rel="manifest" href="manifest.json">
@@ -16,33 +18,44 @@
     <link rel="icon" type="image/png" sizes="512x512" href="https://cdn-icons-png.flaticon.com/512/3063/3063821.png">
 </head>
 
-<body class="bg-[#0b0f19] text-gray-200">
-</body>
+<body class="bg-[#0b0f19] text-gray-300 antialiased scroll-smooth">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&display=swap');
 
-</html>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+        }
 
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #0b0f19;
-    }
+        .font-mono {
+            font-family: 'Fira Code', monospace;
+        }
 
-    .font-mono {
-        font-family: 'Fira Code', monospace;
-    }
+        .glass-card {
+            background: rgba(19, 27, 46, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+        }
 
-    .glass-card {
-        background: rgba(19, 27, 46, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(12px);
-    }
-</style>
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
 
-</head>
+            100% {
+                background-position: 200% 0;
+            }
+        }
 
-<body class="text-gray-300 antialiased">
+        .shimmer-effect {
+            background: linear-gradient(90deg, #0b0f19 25%, #161e31 50%, #0b0f19 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 1rem;
+        }
+    </style>
 
+    <!-- Header -->
     <header class="fixed w-full z-50 bg-[#0b0f19]/80 backdrop-blur-md border-b border-gray-900/60 px-6 py-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
 
@@ -67,7 +80,7 @@
                 <a href="#blog" class="hover:text-pink-400 transition-colors">📝 Blog</a>
                 <a href="#faq" class="hover:text-pink-400 transition-colors">FAQ</a>
                 <a href="#contact" class="hover:text-pink-400 transition-colors">📩 Contact</a>
-                <a href="https://wa.me/2250704334852" target="_blank"
+                <a href="https://wa.me/2250586695114" target="_blank"
                     class="hover:text-pink-400 transition-colors font-bold text-pink-400 animate-pulse flex items-center gap-1.5">
                     <i class="fa-brands fa-whatsapp text-green-500"></i> 🤝 Partenaires
                 </a>
@@ -79,10 +92,10 @@
                     <i class="fa-solid fa-download text-pink-400"></i> Installer
                 </span>
 
-                <a href="#login-section" onclick="gererAuthAction()">
+                <button id="authButton" onclick="location.href='#login-section'"
+                    class="flex items-center gap-2 text-xs font-mono bg-gray-900 border border-gray-800 px-4 py-2 rounded-full hover:text-pink-400 transition">
                     <i class="fa-solid fa-user-lock"></i> <span id="authButtonText">Se connecter</span>
-                </a>
-
+                </button>
                 <a href="#contact"
                     class="text-xs font-mono text-pink-400 hover:text-pink-300 transition lg:hidden">Contact</a>
             </div>
@@ -107,9 +120,9 @@
                 </div>
 
                 <div class="max-w-md mx-auto space-y-4">
-                    <button onclick="connexionGoogle()"
-                        class="w-full bg-white text-gray-900 hover:bg-gray-100 text-xs font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-gray-300">
-                        <i class="fa-brands fa-google text-pink-500"></i> <span>Se connecter avec Google</span>
+                    <button disabled
+                        class="w-full bg-gray-800 text-gray-500 cursor-not-allowed text-xs font-bold py-3.5 rounded-2xl transition-all flex items-center justify-center gap-3 border border-gray-700">
+                        <i class="fa-brands fa-google text-gray-600"></i> <span>Google (Bientôt disponible)</span>
                     </button>
 
                     <div class="flex items-center gap-3 py-2">
@@ -145,80 +158,6 @@
             </div>
         </section>
 
-        <script>
-            // État initial de l'utilisateur
-            window.utilisateurConnecte = false;
-
-            function gererAuthAction() {
-                if (window.utilisateurConnecte) {
-                    // S'il est connecté, on demande confirmation pour déconnecter
-                    if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-                        window.utilisateurConnecte = false;
-
-                        const authBtnText = document.getElementById('authButtonText');
-                        if (authBtnText) {
-                            authBtnText.textContent = "Se connecter";
-                        }
-
-                        const loginSection = document.getElementById('login-section');
-                        if (loginSection) {
-                            loginSection.style.display = "block";
-                        }
-
-                        alert("Vous êtes déconnecté de votre session YELOX.");
-                    }
-                } else {
-                    // S'il n'est pas connecté, on défile vers le formulaire de connexion
-                    const loginSection = document.getElementById('login-section');
-                    if (loginSection) {
-                        loginSection.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }
-            }
-
-            function connexionGoogle() {
-                alert("Initialisation de la connexion Google avec les services No Flop Studio...");
-                setTimeout(() => {
-                    validerConnexion("Utilisateur (Google)");
-                }, 1200);
-            }
-
-            function seConnecter() {
-                const email = document.getElementById('loginEmail').value;
-                const mdp = document.getElementById('loginPassword').value;
-
-                if (!email || !mdp) {
-                    alert("Veuillez remplir tous les champs avant de valider.");
-                    return;
-                }
-
-                alert("Validation des identifiants via le noyau YELOX...");
-                setTimeout(() => {
-                    validerConnexion(email);
-                }, 1200);
-            }
-
-            function validerConnexion(identifiant) {
-                window.utilisateurConnecte = true;
-
-                // Met à jour le texte du bouton dans le header
-                const authBtnText = document.getElementById('authButtonText');
-                if (authBtnText) {
-                    authBtnText.textContent = "Déconnexion";
-                }
-
-                alert(`Authentification réussie pour ${identifiant}. Bienvenue dans votre espace !`);
-
-                // Cache la section de connexion pour libérer la vue
-                const loginSection = document.getElementById('login-section');
-                if (loginSection) {
-                    loginSection.style.display = "none";
-                }
-
-                // Fait défiler la page vers le haut pour découvrir le générateur et les services
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        </script>
         <div id="noAuthMessage" class="max-w-4xl mx-auto px-6 mb-20 text-center">
             <div class="glass-card p-12 rounded-3xl border border-gray-800 bg-gray-900/20">
                 <i class="fa-solid fa-lock text-4xl text-pink-400 mb-6 animate-bounce"></i>
@@ -304,65 +243,39 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">Choisir
-                            un Template</label>
-                        <select id="templateSelect"
-                            class="w-full text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-gray-300 focus:outline-none focus:border-pink-500 transition">
-                            <option value="standard">Standard (Classique)</option>
-                            <option value="storytelling">Storytelling (Story & Émotion)</option>
-                            <option value="commercial">Commercial (Conversion & Vente)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">Nom du
-                            produit</label>
-                        <input type="text" id="testNomProduit" placeholder="ex: YELOX T-shirt"
-                            class="w-full text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-white focus:outline-none focus:border-pink-500/50 transition">
-                    </div>
-
-                    <div>
-                        <label
-                            class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">Catégorie</label>
-                        <input type="text" id="testCategorie" placeholder="ex: Mode, Musique, Électronique"
-                            class="w-full text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-white focus:outline-none focus:border-pink-500/50 transition">
-                    </div>
-
-                    <div class="border-t border-gray-800/60 pt-6">
-                        <label class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">Chemin
-                            d'accès au Backend</label>
-                        <div class="flex flex-col md:flex-row gap-3">
-                            <input type="text" id="apiHost" value="http://localhost:3000"
-                                class="flex-1 text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-white focus:outline-none focus:border-pink-500/50 transition font-mono"
-                                placeholder="ex: http://localhost:3000">
-                            <button onclick="testerConnexionComplete()"
-                                class="text-xs font-mono bg-pink-500/10 border border-pink-500/50 text-pink-400 px-4 py-3.5 rounded-2xl hover:bg-pink-500 hover:text-white transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-plug"></i> Connecter
-                            </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label
+                                class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">Module
+                                YELOX</label>
+                            <select id="moduleSelect"
+                                class="w-full text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-gray-300 focus:outline-none focus:border-pink-500 transition">
+                                <option value="video">Scénario et Vidéo</option>
+                                <option value="marketing">Marketing Digital</option>
+                                <option value="musique">Production Musicale</option>
+                                <option value="dev">Back-end & Dev</option>
+                                <option value="design">Infographie</option>
+                            </select>
                         </div>
-                        <p class="text-[9px] text-gray-500 mt-1.5 leading-relaxed">
-                            <i class="fa-solid fa-circle-info text-pink-400 mr-0.5"></i> Connecter l'API vous permet
-                            d'interagir directement avec votre backend local.
-                        </p>
-                        <p class="text-[10px] text-gray-500 mt-2 italic flex items-center gap-1.5">
-                            <i id="connexionStatus" class="fa-solid fa-circle text-[8px] text-gray-500"></i> Statut :
-                            Non testé
-                        </p>
+                        <div>
+                            <label class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">Ton
+                                de la réponse</label>
+                            <select id="toneSelect"
+                                class="w-full text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-gray-300 focus:outline-none focus:border-pink-500 transition">
+                                <option value="Professionnel">Professionnel (Abidjan Business)</option>
+                                <option value="Créatif">Créatif (Artiste & Innovation)</option>
+                                <option value="Technique">Technique (Expert & Précis)</option>
+                                <option value="Simple">Simple (Clair & Direct)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">
-                            Sélectionner un module
-                        </label>
-                        <select id="moduleSelect"
-                            class="w-full text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-gray-300 focus:outline-none focus:border-pink-500 transition">
-                            <option value="video">Scénario et Vidéo</option>
-                            <option value="marketing">Marketing Digital</option>
-                            <option value="musique">Production Musicale</option>
-                            <option value="dev">Back-end & Dev</option>
-                            <option value="design">Infographie</option>
-                        </select>
+                        <label class="text-[10px] font-mono tracking-wider text-gray-500 uppercase block mb-2">Poser une
+                            question à YELOX</label>
+                        <textarea id="userInput" placeholder="Décrivez votre besoin ou posez votre question ici..."
+                            rows="4"
+                            class="w-full text-xs bg-gray-900 border border-gray-800 p-3.5 rounded-2xl text-white focus:outline-none focus:border-pink-500/50 transition resize-none"></textarea>
                     </div>
 
                     <button id="submitBtn" onclick="envoyerRequeteComplete()"
@@ -372,499 +285,98 @@
 
                     <div id="resultContainer" class="hidden mt-6 pt-6 border-t border-gray-900/60 space-y-4">
                         <div>
-                            <span class="text-xs font-mono tracking-wider text-pink-500 block mb-2">Résultat
-                                généré</span>
-                            <div id="testOutput"
-                                class="p-6 bg-black border border-gray-900 rounded-2xl min-h-[120px] text-xs text-gray-400 leading-relaxed max-h-60 overflow-y-auto">
-                                Aucune requête en cours.
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-xs font-mono tracking-wider text-pink-500">Résultat généré</span>
+                                <span id="latencyDisplay" class="text-[10px] font-mono text-gray-600"></span>
+                            </div>
+
+                            <!-- Loader stylisé (scintillement) -->
+                            <div id="yeloxLoader" class="hidden space-y-3">
+                                <div class="shimmer-effect h-4 w-3/4"></div>
+                                <div class="shimmer-effect h-4 w-full"></div>
+                                <div class="shimmer-effect h-4 w-5/6"></div>
+                            </div>
+
+                            <div id="outputWrapper">
+                                <div id="testOutput"
+                                    class="p-6 bg-black border border-gray-900 rounded-2xl min-h-[120px] text-xs text-gray-400 leading-relaxed max-h-60 overflow-y-auto">
+                                    Aucune requête en cours.
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 pt-2">
+
+
+
+                                <!-- 🎙️ CHOIX VOIX YELOX -->
+                                <select onchange="lireReponse(this.value)"
+                                    class="text-xs font-mono bg-gray-900 text-gray-300 px-2 py-2 rounded-xl border border-gray-800">
+                                    <option value="auto">Auto</option>
+
+                                    <option value="fr1">FR 1</option>
+                                    <option value="fr2">FR 2</option>
+                                    <option value="fr3">FR 3</option>
+                                    <option value="fr4">FR 4</option>
+                                    <option value="fr5">FR 5</option>
+
+                                    <option value="en1">EN 1</option>
+                                    <option value="en2">EN 2</option>
+                                    <option value="en3">EN 3</option>
+                                    <option value="en4">EN 4</option>
+                                    <option value="en5">EN 5</option>
+                                </select>
+
+                                <button onclick="copierReponse()"
+                                    class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-gray-400 hover:text-white transition">
+                                    <i class="fa-regular fa-copy"></i> Copier
+                                </button>
+
+                                <button onclick="exporterEnTexte()"
+                                    class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-blue-400 hover:text-white transition">
+                                    <i class="fa-solid fa-file-export"></i> Télécharger .txt
+                                </button>
+
+                                <button onclick="partagerReponse()"
+                                    class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-green-400 transition">
+                                    <i class="fa-brands fa-whatsapp"></i> Partager
+                                </button>
+
+                                <button onclick="exportPDF()"
+                                    class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-pink-400 transition">
+                                    <i class="fa-solid fa-file-arrow-down"></i> Export PDF
+                                </button>
+
+                                <button onclick="lireReponse()"
+                                    class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-yellow-400 transition">
+                                    <i class="fa-solid fa-volume-high"></i> Écouter
+                                </button>
+
                             </div>
                         </div>
-                        <div class="flex flex-wrap gap-2 pt-2">
-                            <button onclick="copierReponse()"
-                                class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-gray-400 hover:text-white transition">
-                                <i class="fa-regular fa-copy"></i> Copier
-                            </button>
-                            <button onclick="partagerReponse()"
-                                class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-green-400 transition">
-                                <i class="fa-brands fa-whatsapp"></i> Partager
-                            </button>
-                            <button onclick="exportPDF()"
-                                class="text-xs font-mono bg-gray-900 hover:bg-gray-800 px-3 py-2 rounded-xl text-pink-400 transition">
-                                <i class="fa-solid fa-file-arrow-down"></i> Export PDF
-                            </button>
-                        </div>
                     </div>
-                </div>
             </section>
         </div>
 
-        <script>
-            // État d'initialisation
-            window.utilisateurConnecte = false;
-            if (typeof window.quotaRestant === 'undefined') {
-                window.quotaRestant = 5;
-            }
-
-            document.addEventListener("DOMContentLoaded", function () {
-                // S'assurer que le contenu protégé est masqué au départ et l'état initial des boutons mis à jour
-                document.getElementById('quotaDisplay').textContent = `${window.quotaRestant} / 5 restantes`;
-            });
-
-            function gererAuthAction() {
-                if (window.utilisateurConnecte) {
-                    if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
-                        window.utilisateurConnecte = false;
-                        document.getElementById('login-section').style.display = "block";
-                        document.getElementById('noAuthMessage').style.display = "block";
-                        document.getElementById('protectedContent').classList.add('hidden');
-                        document.getElementById('protectedContent').classList.add('opacity-0');
-
-                        const authBtnText = document.getElementById('authButtonText');
-                        if (authBtnText) authBtnText.textContent = "Se connecter";
-
-                        alert("Vous êtes déconnecté de votre session YELOX.");
-                    }
-                } else {
-                    const loginSection = document.getElementById('login-section');
-                    if (loginSection) loginSection.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-
-            function connexionGoogle() {
-                alert("Initialisation de la connexion Google avec les services No Flop Studio...");
-                setTimeout(() => {
-                    validerConnexion("Utilisateur (Google)");
-                }, 1200);
-            }
-
-            function seConnecter() {
-                const email = document.getElementById('loginEmail').value;
-                const mdp = document.getElementById('loginPassword').value;
-
-                if (!email || !mdp) {
-                    alert("Veuillez remplir tous les champs avant de valider.");
-                    return;
-                }
-
-                alert("Validation des identifiants via le noyau YELOX...");
-                setTimeout(() => {
-                    validerConnexion(email);
-                }, 1200);
-            }
-
-            function validerConnexion(identifiant) {
-                window.utilisateurConnecte = true;
-
-                const authBtnText = document.getElementById('authButtonText');
-                if (authBtnText) authBtnText.textContent = "Déconnexion";
-
-                alert(`Authentification réussie pour ${identifiant}. Bienvenue dans votre espace !`);
-
-                // Affichage et transition du contenu protégé
-                document.getElementById('login-section').style.display = "none";
-                document.getElementById('noAuthMessage').style.display = "none";
-
-                const protectedContent = document.getElementById('protectedContent');
-                protectedContent.classList.remove('hidden');
-                setTimeout(() => {
-                    protectedContent.classList.remove('opacity-0');
-                }, 50);
-
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-
-            function setMode(mode) {
-                const btnRapide = document.getElementById('modeRapide');
-                const btnDetaille = document.getElementById('modeDetaille');
-
-                if (mode === 'rapide') {
-                    btnRapide.className = "flex-1 md:flex-none text-xs font-mono bg-pink-500/10 border border-pink-500 text-pink-400 px-4 py-2.5 rounded-xl transition";
-                    btnDetaille.className = "flex-1 md:flex-none text-xs font-mono bg-gray-900/60 border border-gray-800 text-gray-500 hover:text-white px-4 py-2.5 rounded-xl transition";
-                } else {
-                    btnDetaille.className = "flex-1 md:flex-none text-xs font-mono bg-pink-500/10 border border-pink-500 text-pink-400 px-4 py-2.5 rounded-xl transition";
-                    btnRapide.className = "flex-1 md:flex-none text-xs font-mono bg-gray-900/60 border border-gray-800 text-gray-500 hover:text-white px-4 py-2.5 rounded-xl transition";
-                }
-            }
-
-            async function testerConnexionComplete() {
-                const apiHostInput = document.getElementById('apiHost').value;
-                const statusIcon = document.getElementById('connexionStatus');
-
-                const cleanUrl = apiHostInput.endsWith('/')
-                    ? apiHostInput.slice(0, -1)
-                    : apiHostInput;
-
-                try {
-                    // On teste VRAIMENT ton API
-                    const response = await fetch('https://VOTRE_URL_NGROK.ngrok-free.app/generate', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ prompt: fullPrompt })
-                    });
-                    if (!response.ok) throw new Error("API KO");
-
-                    const data = await response.json();
-
-                    if (statusIcon) {
-                        statusIcon.className = "fa-solid fa-circle text-[8px] text-green-500";
-                    }
-
-                    alert("Connexion établie avec succès au noyau YELOX !");
-                } catch (error) {
-                    if (statusIcon) {
-                        statusIcon.className = "fa-solid fa-circle text-[8px] text-red-500";
-                    }
-
-                    alert("Impossible de joindre le serveur. Vérifie que le backend tourne sur le port 3000.");
-                }
-            }
-
-            async function envoyerRequeteComplete() {
-                if (window.quotaRestant <= 0) {
-                    alert("Quota journalier de 5 requêtes atteint. Souscrivez Premium pour en faire plus.");
-                    return;
-                }
-
-                const nom = document.getElementById('testNomProduit').value;
-                const categorie = document.getElementById('testCategorie').value;
-                const template = document.getElementById('templateSelect').value;
-                const apiHost = document.getElementById('apiHost').value || "http://localhost:3000";
-                const resultContainer = document.getElementById('resultContainer');
-                const output = document.getElementById('testOutput');
-                const submitBtn = document.getElementById('submitBtn');
-
-                if (!nom.trim() || !categorie.trim()) {
-                    alert("Veuillez remplir le nom du produit et la catégorie.");
-                    return;
-                }
-
-                window.quotaRestant -= 1;
-                document.getElementById('quotaDisplay').textContent = `${window.quotaRestant} / 5 restantes`;
-
-                if (resultContainer) {
-                    resultContainer.classList.remove('hidden');
-                }
-
-                if (output) {
-                    output.innerHTML = "🤖 YELOX réfléchit...";
-                }
-
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Traitement en cours...';
-                }
-
-                try {
-                    const moduleSelect = document.getElementById('moduleSelect').value;
-
-                    const response = await fetch(`${cleanUrl}/generate`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            prompt: `Tu es un expert en marketing digital et création de contenu viral.
-
-Ton rôle est de générer des idées claires, professionnelles et prêtes à publier.
-
-Produit : ${nom}
-Catégorie : ${categorie}
-Template : ${template}
-
-Objectif :
-- Une idée de contenu forte
-- Une accroche (hook) impactante
-- Une suggestion de message marketing`,
-                            module: moduleSelect
-                        })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Erreur serveur YELOX");
-                    }
-
-                    const data = await response.json();
-                    if (data.result) {
-                        if (output) output.innerHTML = data.result.replace(/\n/g, '<br/>');
-
-                        // INSÉREZ L'APPEL ICI :
-                        const nom = document.getElementById('testNomProduit').value;
-                        const categorie = document.getElementById('testCategorie').value;
-                        const template = document.getElementById('templateSelect').value;
-
-                        ajouterAleaHistorique(nom, categorie, template, data.result);
-                    } else {
-                        output.innerHTML = "<span style='color:#EF4444'>⚠ Réponse vide reçue.</span>";
-                    }
-                } catch (error) {
-                    if (output) {
-                        output.innerHTML = "<span style='color:#EF4444'>❌ Erreur de communication. Le serveur ne répond pas. Lancez le serveur localement.</span>";
-                    }
-                    console.error("Erreur complète :", error);
-                } finally {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-sm"></i> <span>Exécuter la requête</span>';
-                    }
-                }
-            }
-
-            // Fonctions utilitaires diverses
-            function copierReponse() {
-                const output = document.getElementById('testOutput').innerText;
-                navigator.clipboard.writeText(output).then(() => {
-                    alert("Contenu copié dans le presse-papiers !");
-                });
-            }
-
-            function partagerReponse() {
-                const output = encodeURIComponent(document.getElementById('testOutput').innerText);
-                window.open(`https://wa.me/?text=${output}`, '_blank');
-            }
-
-            function exportPDF() {
-                alert("Fonctionnalité Premium d'exportation PDF bientôt disponible.");
-            }
-        </script>
-        <script>
-            if (typeof window.quotaRestant === 'undefined') {
-                window.quotaRestant = 5;
-            }
-
-            document.addEventListener("DOMContentLoaded", function () {
-                const quotaDisplay = document.getElementById('quotaDisplay');
-                if (quotaDisplay) {
-                    quotaDisplay.textContent = `${window.quotaRestant} / 5 restantes`;
-                }
-            });
-
-            function setMode(mode) {
-                const btnRapide = document.getElementById('modeRapide');
-                const btnDetaille = document.getElementById('modeDetaille');
-
-                if (mode === 'rapide') {
-                    btnRapide.className = "flex-1 md:flex-none text-xs font-mono bg-pink-500/10 border border-pink-500 text-pink-400 px-4 py-2.5 rounded-xl transition";
-                    btnDetaille.className = "flex-1 md:flex-none text-xs font-mono bg-gray-900/60 border border-gray-800 text-gray-500 hover:text-white px-4 py-2.5 rounded-xl transition";
-                } else {
-                    btnDetaille.className = "flex-1 md:flex-none text-xs font-mono bg-pink-500/10 border border-pink-500 text-pink-400 px-4 py-2.5 rounded-xl transition";
-                    btnRapide.className = "flex-1 md:flex-none text-xs font-mono bg-gray-900/60 border border-gray-800 text-gray-500 hover:text-white px-4 py-2.5 rounded-xl transition";
-                }
-            }
-
-            async function testerConnexionComplete() {
-                const apiHost = document.getElementById('apiHost').value;
-                const statusIcon = document.getElementById('connexionStatus');
-                const output = document.getElementById('testOutput');
-
-                try {
-                    const cleanUrl = apiHost.endsWith('/') ? apiHost.slice(0, -1) : apiHost;
-                    const response = await fetch(cleanUrl);
-
-                    if (statusIcon) {
-                        statusIcon.className = "fa-solid fa-circle text-[8px] text-green-500";
-                    }
-                    alert("Connexion établie avec succès au noyau YELOX !");
-                } catch (error) {
-                    if (statusIcon) {
-                        statusIcon.className = "fa-solid fa-circle text-[8px] text-red-500";
-                    }
-                    alert("Impossible de joindre le serveur. Assurez-vous que le backend tourne sur le port 3000.");
-                }
-            }
-
-            async function envoyerRequeteComplete() {
-                // Vérification du quota
-                if (typeof window.quotaRestant !== 'undefined' && window.quotaRestant <= 0) {
-                    alert("Quota journalier atteint. Souscrivez Premium pour en faire plus.");
-                    return;
-                }
-
-                // Récupération des valeurs principales de votre formulaire
-                const nom = document.getElementById('testNomProduit')?.value || '';
-                const categorie = document.getElementById('testCategorie')?.value || '';
-                const template = document.getElementById('templateSelect')?.value || 'standard';
-
-                const apiHost = document.getElementById('apiHost')?.value || "http://localhost:3000";
-                const resultContainer = document.getElementById('resultContainer');
-                const output = document.getElementById('testOutput');
-                const submitBtn = document.getElementById('submitBtn');
-
-                // Vérification de sécurité pour s'assurer que la zone de sortie existe
-                if (!output) {
-                    console.error("testOutput introuvable dans le HTML");
-                    alert("Erreur critique : la zone d'affichage du résultat (testOutput) est introuvable.");
-                    return;
-                }
-
-                if (!nom.trim() || !categorie.trim()) {
-                    alert("Veuillez remplir le nom du produit et la catégorie.");
-                    return;
-                }
-
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Traitement...</span>';
-                }
-
-                if (resultContainer) {
-                    resultContainer.style.display = 'block';
-                }
-
-                try {
-                    if (!output) {
-                        console.error("output introuvable");
-                        return;
-                    }
-
-                    const cleanUrl = apiHost.endsWith('/') ? apiHost.slice(0, -1) : apiHost;
-                    const moduleSelect = document.getElementById('moduleSelect')?.value || 'video';
-
-                    const response = await fetch(`${cleanUrl}/generate`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            prompt: `Optimise le lancement :
-Produit : ${nom || "N/A"}
-Catégorie : ${categorie || "N/A"}
-Template : ${template || "standard"}`,
-                            module: moduleSelect
-                        })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Erreur serveur YELOX (HTTP " + response.status + ")");
-                    }
-
-                    let data;
-                    try {
-                        data = await response.json();
-                    } catch (e) {
-                        throw new Error("Réponse backend invalide (JSON attendu)");
-                    }
-
-                    console.log("YELOX RESPONSE:", data);
-
-                    if (data.result) {
-                        output.innerHTML = data.result.replace(/\n/g, '<br/>');
-                    } else {
-                        output.innerHTML = "<span style='color:#EF4444'>⚠ Réponse vide reçue.</span>";
-                    }
-
-                } catch (error) {
-                    output.innerHTML = `<span style='color:#EF4444'>❌ ${error.message}</span>`;
-                    console.error("Erreur complète :", error);
-                } finally {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-sm"></i> <span>Exécuter la requête</span>';
-                    }
-                }
-            }
-            function copierReponse() {
-                const text = document.getElementById('testOutput').innerText;
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('Contenu copié dans le presse-papiers !');
-                });
-            }
-
-            function partagerReponse() {
-                const text = document.getElementById('testOutput').innerText;
-                const encodedText = encodeURIComponent(text);
-                window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
-            }
-
-            function exportPDF() {
-                const text = document.getElementById('testOutput').innerText;
-                const printWindow = window.open('', '', 'height=600,width=800');
-                printWindow.document.write('<html><head><title>Export YELOX</title>');
-                printWindow.document.write('<style>body{font-family:Arial,sans-serif;padding:20px;color:#333;}</style>');
-                printWindow.document.write('</head><body>');
-                printWindow.document.write('<h2>Résultat Optimisé - YELOX</h2><hr/>');
-                printWindow.document.write(`<p>${text.replace(/\n/g, '<br/>')}</p>`);
-                printWindow.document.write('</body></html>');
-                printWindow.document.close();
-                printWindow.focus();
-                printWindow.print();
-            }
-        </script>
         <section class="max-w-4xl mx-auto mb-20">
             <div class="glass-card p-8 rounded-3xl border border-gray-800/80">
+
                 <h3 class="text-sm font-bold text-white mb-6 flex items-center gap-3">
-                    <i class="fa-solid fa-clock-rotate-left text-pink-500"></i> Historique d'utilisation
+                    <i class="fa-solid fa-clock-rotate-left text-pink-500"></i>
+                    Historique d'utilisation
                 </h3>
+
+                <!-- 📜 CONTAINER HISTORIQUE YELOX -->
                 <div class="space-y-3" id="historiqueContainer">
-                    <p class="text-xs text-gray-500 italic">Aucune utilisation précédente pour le moment.</p>
+
+                    <p class="text-xs text-gray-500 italic" id="historiqueEmpty">
+                        Aucune utilisation précédente pour le moment.
+                    </p>
+
                 </div>
+
             </div>
         </section>
 
-        <script>
-            // Initialisation du tableau pour mémoriser l'historique
-            if (typeof window.historiqueRequetes === 'undefined') {
-                window.historiqueRequetes = [];
-            }
-
-            // Fonction pour formater et insérer la carte dans l'historique
-            function ajouterAleaHistorique(nom, categorie, template, resultat) {
-                const container = document.getElementById('historiqueContainer');
-                if (!container) return;
-
-                // Vider le texte initial si c'est le premier ajout
-                if (window.historiqueRequetesComplet && window.historRequetesComplet.length === 0) {
-                    container.innerHTML = '';
-                }
-
-                // Initialisation globale si elle n'existe pas
-                if (typeof window.historiqueRequetes === 'undefined') {
-                    window.historiqueRequetes = [];
-                }
-
-                // Préparer l'objet avec le résultat complet pour pouvoir le lire dans la modale
-                const item = {
-                    nom: nom,
-                    categorie: categorie,
-                    date: new Date().toLocaleTimeString('fr-FR'),
-                    resultat: resultat
-                };
-
-                // Ajouter la nouvelle requête au début de la liste
-                window.historiqueRequetes.unshift(item);
-
-                // Rafraîchir le conteneur HTML
-                let htmlContent = '';
-                window.historiqueRequetes.forEach((h, index) => {
-                    // Tronquer l'affichage dans la carte (maximum 100 caractères)
-                    const resultatAffiche = h.resultat.slice(0, 100) + (h.resultat.length > 100 ? '...' : '');
-
-                    htmlContent += `
-            <div class="p-4 bg-gray-950 border border-gray-900 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="px-2 py-0.5 rounded text-[9px] bg-pink-500/10 text-pink-400 font-mono">${h.categorie}</span>
-                        <span class="text-[10px] text-gray-500 font-mono">${h.date}</span>
-                    </div>
-                    <h4 class="text-xs font-bold text-white mb-0.5">${h.nom}</h4>
-                    <p class="text-xs text-gray-400 line-clamp-2">${resultatAffiche}</p>
-                </div>
-                <button onclick="afficherResultatComplet(${index})" class="text-xs font-mono text-pink-400 hover:underline">
-                    Voir plus
-                </button>
-            </div>
-        `;
-                });
-
-                container.innerHTML = htmlContent;
-            }
-
-            // Fonction pour afficher le texte complet de manière lisible
-            function afficherResultatComplet(index) {
-                const item = window.historiqueRequetes[index];
-                if (item && item.resultat) {
-                    const textePropre = item.resultat.replace(/<br\/>/g, '\n');
-                    alert(`Titre : ${item.nom}\n\n${textePropre}`);
-                }
-            }
-        </script>
 
         <section id="about" class="border-t border-gray-900/60 py-24">
             <div class="max-w-4xl mx-auto px-6 text-center space-y-12">
@@ -883,12 +395,16 @@ Template : ${template || "standard"}`,
                     <p>
                         Né à Abidjan et fruit de plus de neuf années d'expertise et de passion dans le design
                         graphique, l'infographie polyvalente et la communication digitale, le projet <strong>No Flop
-                            Studio</strong> a été fondé par <strong>Monsieur Yelo Joel</strong>. Yelo Joel a su
-                        insuffler une vision où chaque création est pensée pour avoir un impact précis et mesurable
-                        sur le public, en éliminant complètement le hasard des processus de création.
+                            Studio</strong> a été fondé par <strong>Monsieur Yelo Joel</strong>. Notre studio se
+                        distingue par une approche scientifique de la création : chaque pixel et chaque mot sont
+                        optimisés pour la conversion.
                     </p>
 
                     <p>
+                        insuffler une vision où chaque création est pensée pour avoir un impact précis et mesurable
+                        sur le public, en éliminant complètement le hasard des processus de création. Grâce à nos
+                        protocoles "No Flop", nous garantissons que votre investissement créatif se transforme en
+                        résultats concrets.
                         De cette vision rigoureuse est né <strong>YELOX</strong>, l'extension numérique de ce
                         savoir-faire humain. En unissant l'expertise technique du fondateur au calcul exponentiel de
                         l'intelligence artificielle, YELOX transforme la création de contenus et la gestion d'outils
@@ -1042,7 +558,8 @@ Template : ${template || "standard"}`,
                         <span class="text-xs text-pink-400 font-mono">15 Avril 2026</span>
                         <h3 class="text-md font-bold text-white mt-3 mb-2">Comment YELOX redéfinit le design UX</h3>
                         <p class="text-gray-400 text-xs leading-relaxed mb-6">
-                            Découvrez comment nous combinons nos protocoles de conception graphique avec la puissance de
+                            L'intelligence artificielle n'est plus une option mais un levier. Découvrez comment nous
+                            combinons nos protocoles de conception graphique avec la puissance de
                             l'IA pour créer des interfaces fluides et performantes. L'objectif de cette démarche,
                             supervisée par Monsieur Yelo Joel, est d'harmoniser l'esthétique visuelle avec une
                             architecture de données rigoureuse pour une conversion optimale.
@@ -1109,7 +626,8 @@ Template : ${template || "standard"}`,
                             <h3 class="font-bold text-white mb-2">Génération de Descriptions</h3>
                             <p class="text-xs text-gray-400 leading-relaxed mb-6">
                                 Optimisez le parcours d'achat de vos clients e-commerce. Grâce au noyau YELOX, notre
-                                intelligence artificielle analyse vos produits et génère instantanément des fiches
+                                intelligence artificielle de pointe analyse vos produits et génère instantanément des
+                                fiches
                                 percutantes pour éliminer l'improvisation et garantir l'impact de chaque publication.
                             </p>
                         </div>
@@ -1126,9 +644,10 @@ Template : ${template || "standard"}`,
                             <i class="fa-solid fa-chart-line text-2xl text-pink-400 mb-4"></i>
                             <h3 class="font-bold text-white mb-2">Stratégie de Marque</h3>
                             <p class="text-xs text-gray-400 leading-relaxed mb-6">
-                                Ne laissez plus la croissance de vos réseaux sociaux au hasard. Bénéficiez de
+                                Identité visuelle, positionnement et storytelling. Ne laissez plus la croissance de vos
+                                réseaux sociaux au hasard. Bénéficiez de
                                 l'expertise de No Flop Studio pour convertir vos audiences en une communauté fidèle et
-                                engagée, prête à interagir avec vos contenus.
+                                engagée, structurée autour de valeurs fortes.
                             </p>
                         </div>
                         <div>
@@ -1144,7 +663,8 @@ Template : ${template || "standard"}`,
                             <i class="fa-solid fa-code text-2xl text-pink-400 mb-4"></i>
                             <h3 class="font-bold text-white mb-2">Développement & Micro-boutiques</h3>
                             <p class="text-xs text-gray-400 leading-relaxed mb-6">
-                                De la création de plateformes de diffusion comme <em>YeloMusic</em> à l'implémentation
+                                Nous codons pour vendre. De la création de plateformes de diffusion comme
+                                <em>YeloMusic</em> à l'implémentation
                                 de micro-boutiques locales comme <em>VendiPro</em>, nous structurons vos données et vos
                                 plateformes pour en faire de véritables leviers digitaux.
                             </p>
@@ -1182,9 +702,9 @@ Template : ${template || "standard"}`,
                         <div class="flex flex-col items-center gap-1">
                             <span class="text-xs text-gray-500 font-mono">Assistance par message (WhatsApp uniquement)
                                 :</span>
-                            <a href="https://wa.me/2250704334852" target="_blank"
+                            <a href="https://wa.me/2250586695114" target="_blank"
                                 class="text-lg md:text-xl font-black tracking-wider text-pink-400 hover:text-pink-300 transition-colors flex items-center gap-3">
-                                <i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i> +225 0704334852
+                                <i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i> +225 058 669 5114
                             </a>
                         </div>
 
@@ -1219,7 +739,7 @@ Template : ${template || "standard"}`,
                     <h4 class="text-sm font-black text-white uppercase tracking-wider mt-1">Espace Publicitaire</h4>
                 </div>
                 <div class="flex flex-wrap items-center gap-4">
-                    <a href="https://wa.me/2250704334852" target="_blank"
+                    <a href="https://wa.me/2250586695114" target="_blank"
                         class="group relative block w-72 h-20 rounded-2xl overflow-hidden border border-pink-500/20 bg-[#131b2e]/60 hover:border-pink-500/50 transition-all duration-300">
                         <div
                             class="absolute inset-0 flex flex-col justify-center px-4 bg-gradient-to-r from-black/80 to-transparent">
@@ -1232,259 +752,9 @@ Template : ${template || "standard"}`,
             <div class="text-xs text-gray-600 font-mono">&copy; 2026 No Flop Studio. Tous droits réservés.</div>
         </div>
     </footer>
-    <script>
-        let quotaRestant = 5;
-        let historique = [];
-        let estConnecte = false;
+</body> <!-- ton contenu HTML au-dessus -->
 
-        document.getElementById('quotaDisplay').textContent = `${quotaRestant} / 5 restantes`;
-
-        function gererAuthAction() {
-            if (estConnecte) {
-                deconnecter();
-            } else {
-                // Défilement fluide vers la section connexion
-                document.getElementById('login-section').scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function setMode(mode) {
-            const btnRapide = document.getElementById('modeRapide');
-            const btnDetaille = document.getElementById('modeDetaille');
-
-            if (mode === 'rapide') {
-                btnRapide.className = "flex-1 md:flex-none text-xs font-mono bg-pink-500/10 border border-pink-500 text-pink-400 px-4 py-2.5 rounded-xl transition";
-                btnDetaille.className = "flex-1 md:flex-none text-xs font-mono bg-gray-900/60 border border-gray-800 text-gray-500 hover:text-white px-4 py-2.5 rounded-xl transition";
-            } else {
-                btnDetaille.className = "flex-1 md:flex-none text-xs font-mono bg-pink-500/10 border border-pink-500 text-pink-400 px-4 py-2.5 rounded-xl transition";
-                btnRapide.className = "flex-1 md:flex-none text-xs font-mono bg-gray-900/60 border border-gray-800 text-gray-500 hover:text-white px-4 py-2.5 rounded-xl transition";
-                alert("Le mode Détaillé est réservé au mode Premium. Souscrivez bientôt pour débloquer l'IA avancée et des templates supérieurs !");
-                setMode('rapide');
-            }
-        }
-
-        async function testerConnexion() {
-            const statusIndicator = document.getElementById('connexionStatus');
-            statusIndicator.className = "fa-solid fa-circle text-[8px] text-yellow-500 fa-beat-fade";
-
-            try {
-                // Utilisation de l'URL locale pour le test
-                const response = await fetch("http://localhost:3000/");
-
-                // Si l'API est accessible
-                statusIndicator.className = "fa-solid fa-circle text-[8px] text-green-500";
-                alert("Connexion établie avec succès au noyau YELOX (Local) !");
-
-            } catch (error) {
-                // Si l'API n'est pas lancée ou accessible
-                statusIndicator.className = "fa-solid fa-circle text-[8px] text-red-500";
-                alert("Impossible de se connecter au noyau YELOX. Assurez-vous que le serveur tourne (npm start).");
-            }
-        }
-
-        // La variable est maintenant définie de manière unique et sécurisée
-        if (typeof window.quotaRestant === 'undefined') {
-            window.quotaRestant = 5;
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const quotaDisplay = document.getElementById('quotaDisplay');
-            if (quotaDisplay) {
-                quotaDisplay.textContent = `${window.quotaRestant} / 5 restantes`;
-            }
-        });
-
-        async function envoyerRequete() {
-
-            if (window.quotaRestant <= 0) {
-                alert("Vous avez atteint votre quota quotidien de 5 requêtes. Souscrivez Premium.");
-                return;
-            }
-
-            const nomProduitInput = document.getElementById('nomProduit');
-            const categorieInput = document.getElementById('categorie');
-            const templateSelect = document.getElementById('templateSelect')?.value;
-            const moduleSelect = document.getElementById('moduleSelect')?.value || 'video';
-
-            const resultContainer = document.getElementById('resultContainer');
-            const resultOutput = document.getElementById('resultOutput');
-            const submitBtn = document.getElementById('submitBtn');
-
-            if (!nomProduitInput || !categorieInput) {
-                alert("Champs manquants dans le HTML");
-                return;
-            }
-
-            const nomProduit = nomProduitInput.value;
-            const categorie = categorieInput.value;
-
-            if (!nomProduit.trim() || !categorie.trim()) {
-                alert("Veuillez remplir tous les champs.");
-                return;
-            }
-
-            const promptUtilisateur = `
-Optimise le lancement de la plateforme No Flop Studio :
-
-Produit : ${nomProduit}
-Catégorie : ${categorie}
-Template : ${templateSelect}
-`;
-
-            window.quotaRestant -= 1;
-
-            document.getElementById('quotaDisplay').textContent =
-                `${window.quotaRestant} / 5 restantes`;
-
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Traitement...';
-            }
-
-            resultContainer?.classList.remove('hidden');
-            if (resultOutput) resultOutput.innerHTML = "🤖 YELOX réfléchit...";
-
-            try {
-                const response = await fetch("http://localhost:3000/generate", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        prompt: promptUtilisateur,
-                        module: moduleSelect
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error("Erreur serveur YELOX");
-                }
-
-                const data = await response.json();
-
-                if (resultOutput) {
-                    resultOutput.innerHTML = data.result;
-                }
-
-            } catch (error) {
-                console.error("Erreur :", error);
-
-                if (resultOutput) {
-                    resultOutput.innerHTML = `
-                <span style="color:#ff4d4f;">
-                    ❌ Le noyau YELOX ne répond pas.<br>
-                    Vérifie ton serveur backend (npm start).
-                </span>
-            `;
-                }
-
-            } finally {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = "Exécuter la requête";
-                }
-            }
-        }
-
-        function ajouterHistorique(nomProduit, categorie, description) {
-            historique.unshift({
-                produit: nomProduit,
-                categorie: categorie,
-                description: description,
-                date: new Date().toLocaleDateString('fr-FR')
-            });
-
-            const container = document.getElementById('historiqueContainer');
-            container.innerHTML = '';
-            historique.forEach((item) => {
-                container.innerHTML += `
-                    <div class="p-4 bg-gray-900/40 border border-gray-800/60 rounded-xl">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-xs font-bold text-white">${item.produit}</span>
-                            <span class="text-[9px] text-gray-500 font-mono">${item.date}</span>
-                        </div>
-                        <span class="text-[10px] text-pink-400 bg-pink-500/10 px-2 py-0.5 rounded">${item.categorie}</span>
-                        <p class="text-xs text-gray-400 mt-3 truncate">${item.description.replace(/<br>/g, ' ')}</p>
-                    </div>
-                `;
-            });
-        }
-
-        function copierReponse() {
-            const texteYelox = document.getElementById('resultOutput').innerText;
-            navigator.clipboard.writeText(texteYelox).then(() => alert("Texte copié !"));
-        }
-
-        function partagerReponse() {
-            const texteYelox = document.getElementById('resultOutput').innerText;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texteYelox)}`, '_blank');
-        }
-
-        function exportPDF() {
-            alert("Fonctionnalité Premium. Bientôt disponible lors de votre abonnement !");
-        }
-
-        function connexionGoogle() {
-            const emailSimulation = "utilisateur@gmail.com";
-            validerConnexion(emailSimulation);
-        }
-
-        function seConnecter() {
-            const user = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPassword').value;
-
-            if (user === "" || pass === "") {
-                alert("Veuillez remplir tous les champs pour vous connecter.");
-            } else {
-                validerConnexion(user);
-            }
-        }
-
-        function validerConnexion(identifiant) {
-            estConnecte = true;
-            alert(`Connexion de ${identifiant} en cours...`);
-
-            const authBtn = document.getElementById('authButton');
-            authBtn.innerHTML = '<i class="fa-solid fa-user-check"></i> <span>Se déconnecter</span>';
-            authBtn.className = "text-xs font-mono bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-full hover:bg-emerald-500 hover:text-white transition-all flex items-center gap-2";
-
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('noAuthMessage').style.display = 'none';
-            document.getElementById('protectedContent').classList.remove('hidden');
-
-            window.scrollTo({ top: 120, behavior: 'smooth' });
-        }
-
-        function deconnecter() {
-            estConnecte = false;
-            alert("Vous avez été déconnecté avec succès.");
-
-            const authBtn = document.getElementById('authButton');
-            authBtn.innerHTML = '<i class="fa-solid fa-user-lock"></i> <span>Se connecter</span>';
-            authBtn.className = "text-xs font-mono bg-pink-500/10 border border-pink-500/30 text-pink-400 px-4 py-2 rounded-full hover:bg-pink-500 hover:text-white transition-all flex items-center gap-2";
-
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('noAuthMessage').style.display = 'block';
-            document.getElementById('protectedContent').classList.add('hidden');
-        }
-
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBtn').style.display = 'flex';
-            document.getElementById('installBtnMobile').style.display = 'flex';
-        });
-
-        function installerApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-            } else {
-                alert("Pour installer cette application sur iPhone (Safari), appuyez sur l'icône de partage 📤 puis sélectionnez 'Sur l'écran d'accueil'.");
-            }
-        }
-    </script>
+<script src="script.js"></script>
 </body>
 
 </html>
